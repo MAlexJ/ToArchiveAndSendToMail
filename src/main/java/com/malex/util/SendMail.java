@@ -1,5 +1,7 @@
 package com.malex.util;
 
+import com.malex.model.EmailProperties;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.*;
@@ -9,44 +11,21 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.util.Date;
-import java.util.Properties;
 
-/**
- * Created by malex on 17.08.16.
- */
 public class SendMail {
 
-    // Assuming you are sending email
-    private static final String HOST_EMAIL = "smtp.gmail.com";
-    private static final String SMTP_AUTH_EMAIL = "true";
-    private static final String SMTP_PORT_EMAIL = "587";
-    private static final String START_TLS_EMAIL = "true";
+    public static void send(String subjectMessage, String pathFile, byte[] zip) {
 
-    // Properties setting email
-    private static final String HOST = "mail.smtp.host";
-    private static final String SMTP_AUTH = "mail.smtp.auth";
-    private static final String SMTP_PORT = "mail.smtp.port";
-    private static final String START_TLS = "mail.smtp.starttls.enable";
-
-    // Properties email
-    private static final Properties properties;
-
-    // Initialization Properties email
-    static {
-        properties = new Properties();
-        properties.put(SMTP_AUTH, SMTP_AUTH_EMAIL);
-        properties.put(START_TLS, START_TLS_EMAIL);
-        properties.put(HOST, HOST_EMAIL);
-        properties.put(SMTP_PORT, SMTP_PORT_EMAIL);
-    }
-
-    public static void send(String sender, final String userEmail, final String passwordEmail, String recipient, String subjectMessage, String pathFile, byte[] zip) {
+        String sender = EmailProperties.getProperty("mail.email");
+        String user = EmailProperties.getProperty("mail.user");
+        String password = EmailProperties.getProperty("mail.password");
+        String recipient = EmailProperties.getProperty("mail.recipient");
 
         // #########  Step #1: Get the Session object. ##########
-        Session session = Session.getInstance(properties,
+        Session session = Session.getInstance(EmailProperties.getProperties(),
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(userEmail, passwordEmail);
+                        return new PasswordAuthentication(user, password);
                     }
                 });
 
