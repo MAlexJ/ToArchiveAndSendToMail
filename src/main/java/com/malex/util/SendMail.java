@@ -2,12 +2,12 @@ package com.malex.util;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import java.util.Date;
 import java.util.Properties;
 
@@ -40,7 +40,7 @@ public class SendMail {
         properties.put(SMTP_PORT, SMTP_PORT_EMAIL);
     }
 
-    public static void send(String sender, final String userEmail, final String passwordEmail, String recipient, String subjectMessage, String pathFile) {
+    public static void send(String sender, final String userEmail, final String passwordEmail, String recipient, String subjectMessage, String pathFile, byte[] zip) {
 
         // #########  Step #1: Get the Session object. ##########
         Session session = Session.getInstance(properties,
@@ -82,9 +82,10 @@ public class SendMail {
 
             // Part two is attachment
             messageBodyPart = new MimeBodyPart();
-            DataSource source = new FileDataSource(pathFile);
+            // DataSource source = new FileDataSource(pathFile);
+            DataSource source = new ByteArrayDataSource(zip, "application/zip");
             messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setFileName(pathFile);
+            messageBodyPart.setFileName("log.zip");
             multipart.addBodyPart(messageBodyPart);
 
             // Send the complete message parts
